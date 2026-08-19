@@ -1,0 +1,16 @@
+# Build output
+target/
+*.class
+
+# Runtime artifacts written by the vulnerable file-upload / path-traversal endpoints
+uploads/
+data/
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath

@@ -1,0 +1,55 @@
+# PostgreSQL backends for the three intentionally vulnerable DAST test targets.
+# Each app gets its own Postgres instance so they can run concurrently without
+# clobbering each other's schema (schema.sql DROPs+recreates on every startup).
+#
+#   docker compose up -d            # start all three databases
+#   docker compose down -v          # stop and wipe
+#
+# Then run each app (from its own folder):
+#   vulnerable-app-java8   -> Postgres :5432 , app http://localhost:8080
+#   vulnerable-app-java17  -> Postgres :5433 , app http://localhost:8082
+#   vulnerable-app-java21  -> Postgres :5434 , app http://localhost:8081
+#
+# Prefer zero-dependency runs? Skip Docker entirely and use the in-memory H2
+# profile:  mvn spring-boot:run -Dspring-boot.run.profiles=h2
+services:
+  postgres-java8:
+    image: postgres:16
+    container_name: vuln-pg-java8
+    environment:
+      POSTGRES_DB: vulndb
+      POSTGRES_USER: vulnuser
+      POSTGRES_PASSWORD: vulnpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg8-data:/var/lib/postgresql/data
+
+  postgres-java17:
+    image: postgres:16
+    container_name: vuln-pg-java17
+    environment:
+      POSTGRES_DB: vulndb
+      POSTGRES_USER: vulnuser
+      POSTGRES_PASSWORD: vulnpass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg17-data:/var/lib/postgresql/data
+
+  postgres-java21:
+    image: postgres:16
+    container_name: vuln-pg-java21
+    environment:
+      POSTGRES_DB: vulndb
+      POSTGRES_USER: vulnuser
+      POSTGRES_PASSWORD: vulnpass
+    ports:
+      - "5434:5432"
+    volumes:
+      - pg21-data:/var/lib/postgresql/data
+
+volumes:
+  pg8-data:
+  pg17-data:
+  pg21-data:
